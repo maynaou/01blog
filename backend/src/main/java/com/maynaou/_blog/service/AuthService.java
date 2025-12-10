@@ -15,7 +15,7 @@ public class AuthService {
     UserRepository userRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
-    
+
     public void register(RegisterRequest registerRequest) {
         if (userRepository.existsByUsername(registerRequest.getUsername())) {
             throw new RuntimeException("Username already taken");
@@ -33,15 +33,18 @@ public class AuthService {
     }
 
     public void login(LoginRequest loginRequest) {
-        System.out.println("Login request received for user: " + userRepository.existsByUsername(loginRequest.getUsername()));
-        if (!userRepository.existsByUsername(loginRequest.getUsername()) || !userRepository.existsByEmail(loginRequest.getEmail())) {
-            throw new RuntimeException("User not found");
-        }
-
-        User user = userRepository.findByUsername(loginRequest.getUsername());
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid password");
-        }
+          User user = userRepository.findByUsername(loginRequest.getIdentifier());
+          if (user == null) {
+          user = userRepository.findByEmail(loginRequest.getIdentifier());
+          }
+          if (user == null) {
+          throw new RuntimeException("User not found");
+          }
+          
+          if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword()))
+          {
+          throw new RuntimeException("Invalid password");
+          }
         System.out.println("User logged in successfully");
     }
 }
