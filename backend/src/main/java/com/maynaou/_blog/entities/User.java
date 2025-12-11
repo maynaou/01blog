@@ -2,7 +2,12 @@ package com.maynaou._blog.entities;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,9 +30,12 @@ public class User {
      String username;
      String email; 
      String profilePicture;
+     @CreationTimestamp
+     @Column(updatable = false)
      LocalDateTime createdAt;
-     LocalDateTime updateAt;
      boolean isActive; 
      String password;
+     // @Enumerated(EnumType.STRING)
      Role role;
+
 }

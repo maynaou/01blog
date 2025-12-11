@@ -19,7 +19,7 @@ public class Application {
 	//@Bean
 	CommandLineRunner start(UserRepository userRepository) {
 		return args -> {
-			User user = new User(null, "maynaou", "mohssin123@gmail.com","picture", null, null, true, "1234", Role.ADMIN);
+			User user = new User(null, "maynaou", "mohssin123@gmail.com","picture", null, true, "1234", Role.ADMIN);
 			userRepository.save(user);
 			userRepository.findAll().forEach(u -> {
 				System.out.println(u.toString());

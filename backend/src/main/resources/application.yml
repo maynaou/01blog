@@ -1,0 +1,3 @@
+jwt:
+  secretKey: "halamadrid1536superlongsecretkey1234567890"
+  expirationMs: 900000 # 15 minutes en ms
