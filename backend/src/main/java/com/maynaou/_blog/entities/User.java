@@ -35,7 +35,7 @@ public class User {
      LocalDateTime createdAt;
      boolean isActive; 
      String password;
-     // @Enumerated(EnumType.STRING)
+     @Enumerated(EnumType.STRING)
      Role role;
 
 }
