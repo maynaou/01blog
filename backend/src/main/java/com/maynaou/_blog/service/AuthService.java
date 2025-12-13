@@ -1,15 +1,17 @@
 package com.maynaou._blog.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.maynaou._blog.dto.LoginRequest;
 import com.maynaou._blog.dto.RegisterRequest;
-import com.maynaou._blog.entities.User;
+import com.maynaou._blog.entities.AppUser;
 import com.maynaou._blog.repository.UserRepository;
 import com.maynaou._blog.entities.Role;
 import com.maynaou._blog.security.JwtTokenProvider;
-
+import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.AuthenticationManager;
 @Service
 public class AuthService {
     @Autowired
@@ -18,6 +20,7 @@ public class AuthService {
     PasswordEncoder passwordEncoder;
     @Autowired
     JwtTokenProvider jwtTokenProvider;
+    private AuthenticationManager authenticationManager;
 
     // public void PasswordEncoder(PasswordEncoder passwordEncoder) {
     //     this.passwordEncoder = passwordEncoder;
@@ -32,7 +35,7 @@ public class AuthService {
             throw new RuntimeException("Email already in use");
         }
 
-        User user = new User();
+        AppUser user = new AppUser();
         user.setUsername(registerRequest.getUsername());
         user.setEmail(registerRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
@@ -42,20 +45,9 @@ public class AuthService {
     }
 
     public void login(LoginRequest loginRequest) {
-          User user = userRepository.findByUsername(loginRequest.getIdentifier());
-          if (user == null) {
-          user = userRepository.findByEmail(loginRequest.getIdentifier());
-          }
-          if (user == null) {
-          throw new RuntimeException("User not found");
-          }
-          
-          if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword()))
-          {
-          throw new RuntimeException("Invalid password");
-          }
-
-          String token = jwtTokenProvider.generateToken(user.getUsername(),user.getRole());
+          Authentication authenticationRequest = new UsernamePasswordAuthenticationToken(loginRequest.getIdentifier(), loginRequest.getPassword());
+          Authentication authentication =   authenticationManager.authenticate(authenticationRequest);
+          String token = jwtTokenProvider.generateToken(authentication.getName());
           System.out.println("JWT Token: " + token);
           System.out.println("User logged in successfully");
     }

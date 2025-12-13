@@ -23,7 +23,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @Data
-public class User {
+public class AppUser {
      @Id 
      @GeneratedValue(strategy = GenerationType.IDENTITY)
      Long id;
